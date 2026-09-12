@@ -2,11 +2,10 @@ package com.holybuckets.boomseed;
 
 import com.holybuckets.foundation.event.BalmEventRegister;
 import com.holybuckets.boomseed.block.ModBlocks;
-import com.holybuckets.boomseed.config.BoomSeemsConfig;
+import com.holybuckets.boomseed.config.BoomSeedsConfig;
 import com.holybuckets.boomseed.block.be.ModBlockEntities;
 import com.holybuckets.boomseed.entity.ModEntities;
 import com.holybuckets.boomseed.item.ModItems;
-import com.holybuckets.boomseed.menu.ModMenus;
 import com.holybuckets.boomseed.platform.Services;
 import net.blay09.mods.balm.api.Balm;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -31,7 +30,7 @@ public class CommonClass {
             Constants.LOG.info("Hello to " + Constants.MOD_NAME + "!");
         }
 
-        Balm.getConfig().registerConfig(BoomSeemsConfig.class);
+        Balm.getConfig().registerConfig(BoomSeedsConfig.class);
         BoomSeedsMain.INSTANCE = new BoomSeedsMain();
         BalmEventRegister.registerEvents();
         BalmEventRegister.registerCommands();
@@ -39,7 +38,7 @@ public class CommonClass {
         ModBlockEntities.initialize(Balm.getBlockEntities());
         ModItems.initialize(Balm.getItems());
         ModEntities.initialize(Balm.getEntities());
-        ModMenus.initialize(Balm.getMenus());
+        //ModMenus.initialize(Balm.getMenus());
         
         isInitialized = true;
     }

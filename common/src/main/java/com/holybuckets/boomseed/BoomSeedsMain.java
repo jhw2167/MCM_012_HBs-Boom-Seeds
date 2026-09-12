@@ -1,7 +1,7 @@
 package com.holybuckets.boomseed;
 
 
-import com.holybuckets.boomseed.config.BoomSeemsConfig;
+import com.holybuckets.boomseed.config.BoomSeedsConfig;
 import com.holybuckets.foundation.event.EventRegistrar;
 import com.holybuckets.boomseed.entity.BoomSeedEntity;
 import com.holybuckets.foundation.event.custom.ServerTickEvent;
@@ -12,7 +12,7 @@ import net.blay09.mods.balm.api.event.server.ServerStartingEvent;
 
 public class BoomSeedsMain {
     private static boolean DEV_MODE = false;;
-    private static BoomSeemsConfig CONFIG;
+    private static BoomSeedsConfig CONFIG;
     public static BoomSeedsMain INSTANCE;
 
     public BoomSeedsMain()
@@ -36,7 +36,7 @@ public class BoomSeedsMain {
     }
 
     private void onServerStarting(ServerStartingEvent e) {
-        CONFIG = Balm.getConfig().getActiveConfig(BoomSeemsConfig.class);
+        CONFIG = Balm.getConfig().getActiveConfig(BoomSeedsConfig.class);
         BoomSeedEntity.loadConfig(CONFIG);
         //this.DEV_MODE = CONFIG.devMode;
         this.DEV_MODE = false;

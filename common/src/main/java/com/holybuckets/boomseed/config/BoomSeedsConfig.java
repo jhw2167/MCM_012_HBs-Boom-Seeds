@@ -11,7 +11,7 @@ import java.util.List;
 
 
 @Config(Constants.MOD_ID)
-public class BoomSeemsConfig {
+public class BoomSeedsConfig {
 
     @NestedType(String.class)
     @Comment("Block ids that cannot be damaged by Boom Seeds, e.g. minecraft:obsidian")
@@ -45,12 +45,12 @@ public class BoomSeemsConfig {
     public float boomSeedBlockDamage = 0.5f;
 
     @Comment("Portion of a block's hardness damaged by a single Great Boom Seed explosion")
-    public float greatBoomSeedBlockDamage = 1.5f;
+    public float greatBoomSeedBlockDamage = 3f;
 
     @Comment("Chance a block that needs no tool is destroyed outright by an explosion that reaches it")
     public float weakBlockBreakChance = 0.35f;
 
     @Comment("Damage to blocks decays by this float every 1 second")
-    public float boomSeedDamageDecayRate = 0.02f;
+    public float boomSeedDamageDecayRate = 0.2f;
 
 }

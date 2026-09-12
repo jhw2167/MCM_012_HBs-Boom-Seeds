@@ -2,11 +2,14 @@ package com.holybuckets.boomseed.item;
 
 import com.holybuckets.boomseed.entity.BoomSeedEntity;
 import com.holybuckets.boomseed.entity.ModEntities;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,11 +17,33 @@ import net.minecraft.world.level.Level;
 
 public class BoomSeedItem extends Item {
 
+    private static final int USE_COOLDOWN_TICKS = 8;
+
     private final boolean great;
 
     public BoomSeedItem(Properties properties, boolean great) {
         super(properties);
         this.great = great;
+    }
+
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        Level level = context.getLevel();
+        Player player = context.getPlayer();
+        ItemStack stack = context.getItemInHand();
+
+        if (!level.isClientSide) {
+            Vec3 at = context.getClickLocation();
+            BoomSeedEntity.explode(level, at, great);
+            if (player == null || !player.getAbilities().instabuild) stack.shrink(1);
+        }
+
+        if (player != null) {
+            player.awardStat(Stats.ITEM_USED.get(this));
+            player.getCooldowns().addCooldown(this, USE_COOLDOWN_TICKS);
+        }
+
+        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override

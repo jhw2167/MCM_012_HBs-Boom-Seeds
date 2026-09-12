@@ -15,7 +15,7 @@ public class ModItems {
     public static Item greatBoomSeed;
 
     public static void initialize(BalmItems items) {
-        items.registerItem(() -> boomSeed = new BoomSeedItem(items.itemProperties().stacksTo(16), false), id("boom_seed"), id(Constants.MOD_ID));
+        items.registerItem(() -> boomSeed = new BoomSeedItem(items.itemProperties().stacksTo(64), false), id("boom_seed"), id(Constants.MOD_ID));
         items.registerItem(() -> greatBoomSeed = new BoomSeedItem(items.itemProperties().stacksTo(16), true), id("great_boom_seed"), id(Constants.MOD_ID));
         creativeModeTab = items.registerCreativeModeTab(id(Constants.MOD_ID), () -> new ItemStack(boomSeed));
     }

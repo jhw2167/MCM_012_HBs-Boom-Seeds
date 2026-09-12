@@ -1,5 +1,6 @@
 package com.holybuckets.boomseed;
 
+import com.holybuckets.boomseed.trade.FabricTrades;
 import net.blay09.mods.balm.api.Balm;
 import net.fabricmc.api.ModInitializer;
 
@@ -16,5 +17,6 @@ public class BoomSeedsMainFabric implements ModInitializer {
 
         // Use Fabric to bootstrap the Common mod.
         Balm.initialize(Constants.MOD_ID, CommonClass::init);
+        FabricTrades.register();
     }
 }
