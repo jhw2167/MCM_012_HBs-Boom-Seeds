@@ -2,7 +2,9 @@ package com.holybuckets.boomseed;
 
 import com.holybuckets.foundation.event.BalmEventRegister;
 import com.holybuckets.boomseed.block.ModBlocks;
+import com.holybuckets.boomseed.config.BoomSeemsConfig;
 import com.holybuckets.boomseed.block.be.ModBlockEntities;
+import com.holybuckets.boomseed.entity.ModEntities;
 import com.holybuckets.boomseed.item.ModItems;
 import com.holybuckets.boomseed.menu.ModMenus;
 import com.holybuckets.boomseed.platform.Services;
@@ -29,14 +31,14 @@ public class CommonClass {
             Constants.LOG.info("Hello to " + Constants.MOD_NAME + "!");
         }
 
-        //RegisterConfigs
-        //Balm.getConfig().registerConfig(ChallengeTempleConfig.class);
+        Balm.getConfig().registerConfig(BoomSeemsConfig.class);
         BoomSeedsMain.INSTANCE = new BoomSeedsMain();
         BalmEventRegister.registerEvents();
         BalmEventRegister.registerCommands();
         ModBlocks.initialize(Balm.getBlocks());
         ModBlockEntities.initialize(Balm.getBlockEntities());
         ModItems.initialize(Balm.getItems());
+        ModEntities.initialize(Balm.getEntities());
         ModMenus.initialize(Balm.getMenus());
         
         isInitialized = true;

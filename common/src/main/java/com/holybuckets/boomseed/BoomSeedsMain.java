@@ -1,19 +1,18 @@
 package com.holybuckets.boomseed;
 
 
+import com.holybuckets.boomseed.config.BoomSeemsConfig;
 import com.holybuckets.foundation.event.EventRegistrar;
-import com.holybuckets.boomseed.config.TemplateConfig;
+import com.holybuckets.boomseed.entity.BoomSeedEntity;
+import com.holybuckets.foundation.event.custom.ServerTickEvent;
+import com.holybuckets.foundation.event.custom.TickType;
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.EventPriority;
 import net.blay09.mods.balm.api.event.server.ServerStartingEvent;
 
-/**
- * Main instance of the mod, initialize this class statically via commonClass
- * This class will init all major Manager instances and events for the mod
- */
+
 public class BoomSeedsMain {
     private static boolean DEV_MODE = false;;
-    private static TemplateConfig CONFIG;
+    private static BoomSeemsConfig CONFIG;
     public static BoomSeedsMain INSTANCE;
 
     public BoomSeedsMain()
@@ -26,27 +25,19 @@ public class BoomSeedsMain {
 
     private void init()
     {
-
-        /*
-        Proxy for external APIs which are platform dependent
-        this.portalApi = (PortalApi) Balm.platformProxy()
-            .withFabric("com.holybuckets.challengetemple.externalapi.FabricPortalApi")
-            .withForge("com.holybuckets.challengetemple.externalapi.ForgePortalApi")
-            .build();
-            */
-
         //Events
         EventRegistrar registrar = EventRegistrar.getInstance();
-        //ChallengeBlockBehavior.init(registrar);
-
-
-        //register local events
         registrar.registerOnBeforeServerStarted(this::onServerStarting);
+        registrar.registerOnServerTick(TickType.ON_20_TICKS, this::on20Ticks);
+    }
 
+    private void on20Ticks(ServerTickEvent e) {
+        BoomSeedEntity.on20Ticks();
     }
 
     private void onServerStarting(ServerStartingEvent e) {
-        CONFIG = Balm.getConfig().getActiveConfig(TemplateConfig.class);
+        CONFIG = Balm.getConfig().getActiveConfig(BoomSeemsConfig.class);
+        BoomSeedEntity.loadConfig(CONFIG);
         //this.DEV_MODE = CONFIG.devMode;
         this.DEV_MODE = false;
     }

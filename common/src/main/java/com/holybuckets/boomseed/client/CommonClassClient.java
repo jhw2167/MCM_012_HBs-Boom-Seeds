@@ -1,6 +1,5 @@
 package com.holybuckets.boomseed.client;
 
-import com.holybuckets.boomseed.client.screen.ModScreens;
 import com.holybuckets.boomseed.item.ModItems;
 import com.holybuckets.foundation.client.ClientBalmEventRegister;
 import com.holybuckets.foundation.client.ClientEventRegistrar;
@@ -13,7 +12,6 @@ public class CommonClassClient {
         ClientEventRegistrar registrar = ClientEventRegistrar.getInstance();
         ClientBalmEventRegister.registerEvents();
         ModRenderers.clientInitialize(BalmClient.getRenderers());
-        ModScreens.clientInitialize(BalmClient.getScreens());
         //ModItems.clientInitialize();
     }
 

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GSG",
+    "GGG"
+  ],
+  "key": {
+    "G": { "item": "minecraft:gunpowder" },
+    "S": [
+      { "item": "minecraft:melon_seeds" },
+      { "item": "minecraft:pumpkin_seeds" }
+    ]
+  },
+  "result": { "item": "hbs_boomseed:great_boom_seed", "count": 2 }
+}
