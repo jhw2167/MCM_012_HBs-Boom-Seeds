@@ -28,11 +28,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class BoomSeedEntity extends ThrowableItemProjectile {
 
     private static final int GREAT_BOOM_RANGE = 1;
-    private static final float BOOM_ENTITY_DAMAGE = 5.0f;
+    private static final float BOOM_ENTITY_DAMAGE = 3.0f;
     private static final float GREAT_BOOM_ENTITY_DAMAGE = 20.0f;
     private static final float DROP_CHANCE = 0.25f;
 
@@ -41,9 +42,9 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
     private static final Set<Block> GREAT_BOOM_SEED_IMPERVIOUS = new HashSet<>();
 
     private static float weakBlockBreakChance = 0.35f;
-    private static float boomSeedBlockDamage = 0.25f;
+    private static float boomSeedBlockDamage = 0.12f;
     private static float greatBoomSeedBlockDamage = 0.75f;
-    private static float damageDecayRate = 0.02f;
+    private static float damageDecayRate = 0.035f;
 
     private boolean exploded = false;
     private boolean cosmetic = false;
@@ -151,7 +152,7 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
 
         BlockPos center = BlockPos.containing(at.x, at.y, at.z);
 
-        for (BlockPos pos: blastArea(center, great))
+        for (BlockPos pos: blastArea(center, at, great))
         {
             BlockState state = level.getBlockState(pos);
             if (!canDamage(level, pos, state, great)) continue;
@@ -166,29 +167,33 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
         }
     }
 
-    private static List<BlockPos> blastArea(BlockPos center, boolean great) {
-        List<BlockPos> blocks = new ArrayList<>();
+    private static Set<BlockPos> blastArea(BlockPos center, Vec3 hitAt, boolean great)
+    {
+        Set<BlockPos> blocks = new HashSet<>();
 
-        if (!great) {
-            blocks.add(center);
-            blocks.add(center.above());
-            blocks.add(center.below());
-            blocks.add(center.north());
-            blocks.add(center.south());
-            blocks.add(center.east());
-            blocks.add(center.west());
-            return blocks;
-        }
+
+        BlockPos frontFace = getface(center, hitAt, 1);
+        BlockPos backFace = getface(center, hitAt, -1);
+        BlockPos hitFace = (frontFace.equals(center)) ? backFace : frontFace;
+
+        //the sample pos needs to be closer to the center of the hit face than the center of the front face, so we can use that to filter out blocks that are too far away
+        Predicate<Vec3> isClose = (posCenter) -> posCenter.distanceToSqr(hitFace.getCenter()) <= posCenter.distanceToSqr(center.getCenter())+0.1d;
 
         for (int x = -GREAT_BOOM_RANGE; x <= GREAT_BOOM_RANGE; x++) {
             for (int y = -GREAT_BOOM_RANGE; y <= GREAT_BOOM_RANGE; y++) {
                 for (int z = -GREAT_BOOM_RANGE; z <= GREAT_BOOM_RANGE; z++) {
-                    blocks.add(center.offset(x, y, z));
+                    if(great || isClose.test(hitFace.offset(x, y, z).getCenter()))
+                        blocks.add(hitFace.offset(x, y, z));
                 }
             }
         }
+        blocks.add(center);
         return blocks;
     }
+
+        private static BlockPos getface(BlockPos pos, Vec3 at, int dir) {
+            return new BlockPos((int) (pos.getX()+dir*0.1d), (int) (pos.getY()+dir*0.1d), (int) (pos.getZ()+dir*0.1d));
+        }
 
     private static boolean canDamage(Level level, BlockPos pos, BlockState state, boolean great) {
         if (state.isAir()) return false;

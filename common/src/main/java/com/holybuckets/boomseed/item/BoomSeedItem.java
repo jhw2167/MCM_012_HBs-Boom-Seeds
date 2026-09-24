@@ -45,7 +45,6 @@ public class BoomSeedItem extends Item {
         }
 
         if (player != null) {
-            player.awardStat(Stats.ITEM_USED.get(this));
             player.getCooldowns().addCooldown(this, USE_COOLDOWN_TICKS);
         }
 
@@ -61,6 +60,7 @@ public class BoomSeedItem extends Item {
 
         if (!level.isClientSide) {
             throwSeeds(level, player, false);
+            player.getCooldowns().addCooldown(this, USE_COOLDOWN_TICKS);
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
@@ -79,8 +79,8 @@ public class BoomSeedItem extends Item {
 
         for (int i = 0; i < count; i++) {
             double angle = Math.toDegrees(RAND.nextDouble(SPREAD_DEGREES));
-            float xAngle = (float)(Math.sin(Math.toRadians(angle))*2);
-            float yAngle = (float)(Math.cos(Math.toRadians(angle))*2);
+            float xAngle = (float)(Math.sin(Math.toRadians(angle))*3);
+            float yAngle = (float)(Math.cos(Math.toRadians(angle))*3);
 
             BoomSeedEntity seed = new BoomSeedEntity(great ? ModEntities.greatBoomSeed.get() : ModEntities.boomSeed.get(), level, player);
             seed.setDamageScale(scale);
