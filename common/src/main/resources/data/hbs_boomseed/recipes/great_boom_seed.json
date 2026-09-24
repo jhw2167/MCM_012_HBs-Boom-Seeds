@@ -9,8 +9,9 @@
     "G": { "item": "minecraft:gunpowder" },
     "S": [
       { "item": "minecraft:melon_seeds" },
-      { "item": "minecraft:pumpkin_seeds" }
+      { "item": "minecraft:pumpkin_seeds" },
+      { "item": "minecraft:apple" }
     ]
   },
-  "result": { "item": "hbs_boomseed:great_boom_seed", "count": 2 }
+  "result": { "item": "hbs_boomseed:great_boom_seed", "count": 3 }
 }

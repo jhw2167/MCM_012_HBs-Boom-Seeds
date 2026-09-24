@@ -42,13 +42,12 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
     private static final Set<Block> GREAT_BOOM_SEED_IMPERVIOUS = new HashSet<>();
 
     private static float weakBlockBreakChance = 0.35f;
-    private static float boomSeedBlockDamage = 0.12f;
+    private static float boomSeedBlockDamage = 0.2f;
     private static float greatBoomSeedBlockDamage = 0.75f;
     private static float damageDecayRate = 0.035f;
 
     private boolean exploded = false;
     private boolean cosmetic = false;
-    private float damageScale = 1.0f;
     private static Random randomSource;
 
     private static Block toBlock(String loc) {
@@ -95,9 +94,6 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
         this.cosmetic = true;
     }
 
-    public void setDamageScale(float damageScale) {
-        this.damageScale = damageScale;
-    }
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
@@ -105,7 +101,7 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
         if (this.level().isClientSide || this.cosmetic || this.exploded) return;
         this.exploded = true;
         Entity target = result.getEntity();
-        float damage = (isGreat() ? GREAT_BOOM_ENTITY_DAMAGE : BOOM_ENTITY_DAMAGE) * this.damageScale;
+        float damage = (isGreat() ? GREAT_BOOM_ENTITY_DAMAGE : BOOM_ENTITY_DAMAGE);
         target.hurt(this.damageSources().thrown(this, this.getOwner()), damage);
         playBoom(this.level(), this.position(), isGreat());
     }
@@ -115,7 +111,7 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
         super.onHitBlock(result);
         if (this.level().isClientSide || this.cosmetic || this.exploded) return;
         this.exploded = true;
-        explode(this.level(), this.position(), isGreat(), this.damageScale);
+        explode(this.level(), this.position(), isGreat(), false);
     }
 
     @Override
@@ -124,14 +120,15 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
         if (!this.level().isClientSide) this.discard();
     }
 
-    public static void explode(Level level, Vec3 at, boolean great) {
-        explode(level, at, great, 1.0f);
-    }
 
-    public static void explode(Level level, Vec3 at, boolean great, float damageScale) {
+    private static int boomCount=0;
+    public static void explode(Level level, Vec3 at, boolean great, boolean forceSound) {
         if (level.isClientSide) return;
-        damageBlocks(level, at, great, damageScale);
-        playBoom(level, at, great);
+        damageBlocks(level, at, great);
+        if(great || forceSound || (boomCount++>2)) {
+            boomCount=0;
+            playBoom(level, at, great);
+        }
     }
 
     private static void playBoom(Level level, Vec3 at, boolean great) {
@@ -147,8 +144,8 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
         }
     }
 
-    private static void damageBlocks(Level level, Vec3 at, boolean great, float damageScale) {
-        float power = (great ? greatBoomSeedBlockDamage : boomSeedBlockDamage) * damageScale;
+    private static void damageBlocks(Level level, Vec3 at, boolean great) {
+        float power = (great ? greatBoomSeedBlockDamage : boomSeedBlockDamage);
 
         BlockPos center = BlockPos.containing(at.x, at.y, at.z);
 
@@ -172,17 +169,19 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
         Set<BlockPos> blocks = new HashSet<>();
 
 
-        BlockPos frontFace = getface(center, hitAt, 1);
-        BlockPos backFace = getface(center, hitAt, -1);
-        BlockPos hitFace = (frontFace.equals(center)) ? backFace : frontFace;
+        //BlockPos frontFace = getface(center, hitAt, 1);
+        //BlockPos backFace = getface(center, hitAt, -1);
+        BlockPos hitFace = center;
 
         //the sample pos needs to be closer to the center of the hit face than the center of the front face, so we can use that to filter out blocks that are too far away
-        Predicate<Vec3> isClose = (posCenter) -> posCenter.distanceToSqr(hitFace.getCenter()) <= posCenter.distanceToSqr(center.getCenter())+0.1d;
+        Predicate<Vec3> isCloseFalloff = (posCenter) -> {
+            return posCenter.distanceToSqr(hitFace.getCenter()) <= randomSource.nextDouble()+1.5d;
+        };
 
         for (int x = -GREAT_BOOM_RANGE; x <= GREAT_BOOM_RANGE; x++) {
             for (int y = -GREAT_BOOM_RANGE; y <= GREAT_BOOM_RANGE; y++) {
                 for (int z = -GREAT_BOOM_RANGE; z <= GREAT_BOOM_RANGE; z++) {
-                    if(great || isClose.test(hitFace.offset(x, y, z).getCenter()))
+                    if(great || isCloseFalloff.test(hitFace.offset(x, y, z).getCenter()))
                         blocks.add(hitFace.offset(x, y, z));
                 }
             }

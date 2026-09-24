@@ -42,7 +42,7 @@ public class BoomSeedsConfig {
         "minecraft:soul_lantern" ));
 
     @Comment("Portion of a block's hardness damaged by a single Boom Seed explosion")
-    public float boomSeedBlockDamage = 0.5f;
+    public float boomSeedBlockDamage = 0.25f;
 
     @Comment("Portion of a block's hardness damaged by a single Great Boom Seed explosion")
     public float greatBoomSeedBlockDamage = 3f;
@@ -51,6 +51,6 @@ public class BoomSeedsConfig {
     public float weakBlockBreakChance = 0.35f;
 
     @Comment("Damage to blocks decays by this float every 1 second")
-    public float boomSeedDamageDecayRate = 0.2f;
+    public float boomSeedDamageDecayRate = 0.20f;
 
 }

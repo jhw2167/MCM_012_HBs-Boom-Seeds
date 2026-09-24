@@ -39,7 +39,7 @@ public class BoomSeedItem extends Item {
 
         if (!level.isClientSide) {
             Vec3 at = context.getClickLocation();
-            BoomSeedEntity.explode(level, at, great);
+            BoomSeedEntity.explode(level, at, great, true);
             if (player != null) throwSeeds(level, player, true);
             if (player == null || !player.getAbilities().instabuild) stack.shrink(1);
         }
@@ -83,7 +83,6 @@ public class BoomSeedItem extends Item {
             float yAngle = (float)(Math.cos(Math.toRadians(angle))*3);
 
             BoomSeedEntity seed = new BoomSeedEntity(great ? ModEntities.greatBoomSeed.get() : ModEntities.boomSeed.get(), level, player);
-            seed.setDamageScale(scale);
             if (cosmetic) seed.setCosmetic();
             seed.shootFromRotation(player, player.getXRot()+xAngle, player.getYRot() + yAngle, 0.0f, 1.5f, 1.0f);
             level.addFreshEntity(seed);
