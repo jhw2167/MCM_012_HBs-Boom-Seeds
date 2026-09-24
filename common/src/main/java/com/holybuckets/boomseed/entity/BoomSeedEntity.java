@@ -31,10 +31,9 @@ import java.util.*;
 
 public class BoomSeedEntity extends ThrowableItemProjectile {
 
-    private static final float BOOM_RADIUS = 1.5f;
-    private static final float GREAT_BOOM_RADIUS = 3.0f;
+    private static final int GREAT_BOOM_RANGE = 1;
     private static final float BOOM_ENTITY_DAMAGE = 5.0f;
-    private static final float GREAT_BOOM_ENTITY_DAMAGE = 14.0f;
+    private static final float GREAT_BOOM_ENTITY_DAMAGE = 20.0f;
     private static final float DROP_CHANCE = 0.25f;
 
     private static final Map<ResourceKey<Level>, Map<BlockPos, Float>> BLOCK_DAMAGE = new HashMap<>();
@@ -47,6 +46,8 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
     private static float damageDecayRate = 0.02f;
 
     private boolean exploded = false;
+    private boolean cosmetic = false;
+    private float damageScale = 1.0f;
     private static Random randomSource;
 
     private static Block toBlock(String loc) {
@@ -86,15 +87,24 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
 
     @Override
     protected Item getDefaultItem() {
-        return isGreat() ? ModItems.greatBoomSeed : ModItems.boomSeed;
+        return isGreat() ? ModItems.greatBoomSeed : ModItems.singleBoomSeed;
+    }
+
+    public void setCosmetic() {
+        this.cosmetic = true;
+    }
+
+    public void setDamageScale(float damageScale) {
+        this.damageScale = damageScale;
     }
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
         super.onHitEntity(result);
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide || this.cosmetic || this.exploded) return;
+        this.exploded = true;
         Entity target = result.getEntity();
-        float damage = isGreat() ? GREAT_BOOM_ENTITY_DAMAGE : BOOM_ENTITY_DAMAGE;
+        float damage = (isGreat() ? GREAT_BOOM_ENTITY_DAMAGE : BOOM_ENTITY_DAMAGE) * this.damageScale;
         target.hurt(this.damageSources().thrown(this, this.getOwner()), damage);
         playBoom(this.level(), this.position(), isGreat());
     }
@@ -102,9 +112,9 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
     @Override
     protected void onHitBlock(BlockHitResult result) {
         super.onHitBlock(result);
-        if (this.level().isClientSide || this.exploded) return;
+        if (this.level().isClientSide || this.cosmetic || this.exploded) return;
         this.exploded = true;
-        explode(this.level(), this.position(), isGreat());
+        explode(this.level(), this.position(), isGreat(), this.damageScale);
     }
 
     @Override
@@ -114,8 +124,12 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
     }
 
     public static void explode(Level level, Vec3 at, boolean great) {
+        explode(level, at, great, 1.0f);
+    }
+
+    public static void explode(Level level, Vec3 at, boolean great, float damageScale) {
         if (level.isClientSide) return;
-        damageBlocks(level, at, great);
+        damageBlocks(level, at, great, damageScale);
         playBoom(level, at, great);
     }
 
@@ -132,17 +146,12 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
         }
     }
 
-    private static void damageBlocks(Level level, Vec3 at, boolean great) {
-        float radius = great ? GREAT_BOOM_RADIUS : BOOM_RADIUS;
-        float power = great ? greatBoomSeedBlockDamage : boomSeedBlockDamage;
+    private static void damageBlocks(Level level, Vec3 at, boolean great, float damageScale) {
+        float power = (great ? greatBoomSeedBlockDamage : boomSeedBlockDamage) * damageScale;
 
         BlockPos center = BlockPos.containing(at.x, at.y, at.z);
-        BlockPos[] blocks = { center,
-                center.above(), center.below(), center.north(),
-                center.south(), center.east(), center.west()
-        };
 
-        for (BlockPos pos: blocks)
+        for (BlockPos pos: blastArea(center, great))
         {
             BlockState state = level.getBlockState(pos);
             if (!canDamage(level, pos, state, great)) continue;
@@ -155,6 +164,30 @@ public class BoomSeedEntity extends ThrowableItemProjectile {
 
             applyDamage(level, pos.immutable(), state, power);
         }
+    }
+
+    private static List<BlockPos> blastArea(BlockPos center, boolean great) {
+        List<BlockPos> blocks = new ArrayList<>();
+
+        if (!great) {
+            blocks.add(center);
+            blocks.add(center.above());
+            blocks.add(center.below());
+            blocks.add(center.north());
+            blocks.add(center.south());
+            blocks.add(center.east());
+            blocks.add(center.west());
+            return blocks;
+        }
+
+        for (int x = -GREAT_BOOM_RANGE; x <= GREAT_BOOM_RANGE; x++) {
+            for (int y = -GREAT_BOOM_RANGE; y <= GREAT_BOOM_RANGE; y++) {
+                for (int z = -GREAT_BOOM_RANGE; z <= GREAT_BOOM_RANGE; z++) {
+                    blocks.add(center.offset(x, y, z));
+                }
+            }
+        }
+        return blocks;
     }
 
     private static boolean canDamage(Level level, BlockPos pos, BlockState state, boolean great) {

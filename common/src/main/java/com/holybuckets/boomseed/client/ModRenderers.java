@@ -8,8 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ModRenderers {
 
+    private static final float BOOM_SEED_SCALE = 1.0f / 3.0f;
+
     public static void clientInitialize(BalmRenderers renderers) {
-        renderers.registerEntityRenderer(id("boom_seed"), ModEntities.boomSeed::get, (context) -> new ThrownItemRenderer<>(context));
+        renderers.registerEntityRenderer(id("boom_seed"), ModEntities.boomSeed::get, (context) -> new ThrownItemRenderer<>(context, BOOM_SEED_SCALE, false));
         renderers.registerEntityRenderer(id("great_boom_seed"), ModEntities.greatBoomSeed::get, (context) -> new ThrownItemRenderer<>(context));
     }
 

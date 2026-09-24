@@ -13,10 +13,12 @@ public class ModItems {
     public static DeferredObject<CreativeModeTab> creativeModeTab;
     public static Item boomSeed;
     public static Item greatBoomSeed;
+    public static Item singleBoomSeed;
 
     public static void initialize(BalmItems items) {
         items.registerItem(() -> boomSeed = new BoomSeedItem(items.itemProperties().stacksTo(64), false), id("boom_seed"), id(Constants.MOD_ID));
         items.registerItem(() -> greatBoomSeed = new BoomSeedItem(items.itemProperties().stacksTo(16), true), id("great_boom_seed"), id(Constants.MOD_ID));
+        items.registerItem(() -> singleBoomSeed = new Item(items.itemProperties().stacksTo(1)), id("single_boom_seed"));
         creativeModeTab = items.registerCreativeModeTab(id(Constants.MOD_ID), () -> new ItemStack(boomSeed));
     }
 

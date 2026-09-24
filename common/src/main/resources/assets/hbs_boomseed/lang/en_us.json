@@ -1,5 +1,6 @@
 {
   "itemGroup.hbs_boomseed.hbs_boomseed": "HBs Boom Seeds",
   "item.hbs_boomseed.boom_seed": "Boom Seed",
-  "item.hbs_boomseed.great_boom_seed": "Great Boom Seed"
+  "item.hbs_boomseed.great_boom_seed": "Great Boom Seed",
+  "item.hbs_boomseed.single_boom_seed": "Single Boom Seed"
 }
