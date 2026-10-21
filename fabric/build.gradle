@@ -29,6 +29,9 @@ dependencies {
 
     modImplementation("com.simibubi.create:create-fabric:${create_fabric_version}")
 
+
+    modImplementation "software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"
+
 }
 
 loom {

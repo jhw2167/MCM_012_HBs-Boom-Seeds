@@ -6,16 +6,20 @@ import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class ModBlocks {
 
     public static Block templateBlock;
+    public static Block sunjumpFlower;
     //public static Block[] scopedSharestones = new SharestoneBlock[DyeColor.values().length];
 
     public static void initialize(BalmBlocks blocks) {
         blocks.register(() -> templateBlock = new EmptyBlock(defaultProperties()), () -> itemBlock(templateBlock), id("template_block"));
+        blocks.register(() -> sunjumpFlower = new SunJumpFlowerBlock(flowerProperties()), () -> itemBlock(sunjumpFlower), id("sunjump_flower"));
+        Balm.getItems().addToCreativeModeTab(id(Constants.MOD_ID), () -> new ItemLike[]{ sunjumpFlower });
 
         /*
         DyeColor[] colors = DyeColor.values();
@@ -32,6 +36,15 @@ public class ModBlocks {
 
     private static ResourceLocation id(String name) {
         return new ResourceLocation(Constants.MOD_ID, name);
+    }
+
+    private static BlockBehaviour.Properties flowerProperties() {
+        return Balm.getBlocks().blockProperties()
+            .noCollission()
+            .instabreak()
+            .sound(SoundType.GRASS)
+            .noOcclusion()
+            .lightLevel(state -> 7);
     }
 
     private static BlockBehaviour.Properties defaultProperties() {

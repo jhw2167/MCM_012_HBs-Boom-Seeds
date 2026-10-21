@@ -44,6 +44,9 @@ dependencies {
     implementation ("com.holybuckets.foundation:HBs_Foundation-common-${minecraft_version}:${foundation_version}") {
         changing = true
     }
+
+    compileOnly "software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}"
+
 }
 
 publishing {

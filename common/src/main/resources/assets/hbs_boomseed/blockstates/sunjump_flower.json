@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "sprung=false": { "model": "hbs_boomseed:block/sunjump_flower" },
+    "sprung=true": { "model": "hbs_boomseed:block/sunjump_flower" }
+  }
+}

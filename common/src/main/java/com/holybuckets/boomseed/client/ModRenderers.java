@@ -1,6 +1,8 @@
 package com.holybuckets.boomseed.client;
 
 import com.holybuckets.boomseed.Constants;
+import com.holybuckets.boomseed.block.be.ModBlockEntities;
+import com.holybuckets.boomseed.client.render.SunJumpFlowerRenderer;
 import com.holybuckets.boomseed.entity.ModEntities;
 import net.blay09.mods.balm.api.client.rendering.BalmRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
@@ -13,6 +15,7 @@ public class ModRenderers {
     public static void clientInitialize(BalmRenderers renderers) {
         renderers.registerEntityRenderer(id("boom_seed"), ModEntities.boomSeed::get, (context) -> new ThrownItemRenderer<>(context, BOOM_SEED_SCALE, false));
         renderers.registerEntityRenderer(id("great_boom_seed"), ModEntities.greatBoomSeed::get, (context) -> new ThrownItemRenderer<>(context));
+        renderers.registerBlockEntityRenderer(id("sunjump_flower"), ModBlockEntities.sunjumpFlower::get, (context) -> new SunJumpFlowerRenderer());
     }
 
     private static ResourceLocation id(String name) {

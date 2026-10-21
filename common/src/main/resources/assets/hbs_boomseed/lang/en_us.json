@@ -1,6 +1,12 @@
 {
   "itemGroup.hbs_boomseed.hbs_boomseed": "HBs Boom Seeds",
   "item.hbs_boomseed.boom_seed": "Boom Seed",
+  "item.hbs_boomseed.boom_seed.lore": "Small seeds that pack a big BOOM. So big that some blocks may be destroyed entirely. Right click to throw.",
   "item.hbs_boomseed.great_boom_seed": "Great Boom Seed",
-  "item.hbs_boomseed.single_boom_seed": "Single Boom Seed"
+  "item.hbs_boomseed.great_boom_seed.lore": "Large seed for an even bigger BOOM. Right click to throw.",
+  "item.hbs_boomseed.single_boom_seed": "Single Boom Seed",
+  "block.hbs_boomseed.sunjump_flower": "SunJump Flower",
+  "block.hbs_boomseed.sunjump_flower.lore": "Right click this flower on some soft soil to JUMP into the air. Only blooms with sufficient light. Can be crafted into seeds.",
+  "block.hbs_boomseed.sunjump_flower_seeds": "SunJump Seeds"
+
 }

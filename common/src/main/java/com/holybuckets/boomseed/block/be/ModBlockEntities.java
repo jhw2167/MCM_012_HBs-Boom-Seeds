@@ -11,12 +11,17 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ModBlockEntities {
     public static DeferredObject<BlockEntityType<TemplateBlockEntity>> templateChest;
+    public static DeferredObject<BlockEntityType<SunJumpFlowerBlockEntity>> sunjumpFlower;
 
     public static void initialize(BalmBlockEntities blockEntities)
     {
         templateChest =  blockEntities
             .registerBlockEntity( id("template_chest"), TemplateBlockEntity::new,
                 () -> new Block[]{ModBlocks.templateBlock} );
+
+        sunjumpFlower = blockEntities
+            .registerBlockEntity( id("sunjump_flower"), SunJumpFlowerBlockEntity::new,
+                () -> new Block[]{ModBlocks.sunjumpFlower} );
 
 
     }

@@ -92,6 +92,9 @@ dependencies {
 
     implementation fg.deobf("curse.maven:create-${create_proj_id}:${create_forge_file_id}")
 
+
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
+
 }
 
 tasks.withType(JavaCompile).configureEach {
