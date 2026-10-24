@@ -70,7 +70,8 @@ public class SunJumpFlowerBlockEntity extends BlockEntity implements GeoBlockEnt
 
         switch (phase) {
             case READY -> {
-                if (SunJumpFlowerBlock.findLaunchTarget(level, pos) != null) arm();
+                if (!SunJumpFlowerBlock.hasNearbyPlayer(level, pos)) return;
+                if (!SunJumpFlowerBlock.findLaunchTargets(level, pos).isEmpty()) arm();
             }
             case ARMING -> {
                 if (phaseTick < ARM_TICKS) return;

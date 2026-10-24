@@ -1,5 +1,6 @@
 package com.holybuckets.boomseed.trade;
 
+import com.holybuckets.boomseed.block.ModBlocks;
 import com.holybuckets.boomseed.item.ModItems;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -17,11 +18,14 @@ public class BoomSeedTrades {
     private static final int PORK_TRADE_SEEDS = 16;
     private static final int COPPER_COST = 6;
     private static final int COPPER_TRADE_SEEDS = 32;
+    private static final int EMERALD_COST = 1;
+    private static final int EMERALD_TRADE_FLOWERS = 6;
 
     public static List<VillagerTrades.ItemListing> wanderingTrades() {
         List<VillagerTrades.ItemListing> trades = new ArrayList<>();
         trades.add(new SimpleListing(new ItemStack(Items.PORKCHOP, PORK_COST), new ItemStack(ModItems.boomSeed, PORK_TRADE_SEEDS), 8, 1));
         trades.add(new SimpleListing(new ItemStack(Items.COPPER_INGOT, COPPER_COST), new ItemStack(ModItems.boomSeed, COPPER_TRADE_SEEDS), 6, 1));
+        trades.add(new SimpleListing(new ItemStack(Items.EMERALD, EMERALD_COST), new ItemStack(ModBlocks.sunjumpFlower, EMERALD_TRADE_FLOWERS), 4, 1));
         return trades;
     }
 

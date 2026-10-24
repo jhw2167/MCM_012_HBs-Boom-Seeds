@@ -7,6 +7,7 @@ import com.holybuckets.boomseed.block.be.ModBlockEntities;
 import com.holybuckets.boomseed.entity.ModEntities;
 import com.holybuckets.boomseed.item.ModItems;
 import com.holybuckets.boomseed.platform.Services;
+import com.holybuckets.boomseed.worldgen.ModWorldGen;
 import net.blay09.mods.balm.api.Balm;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Items;
@@ -38,6 +39,7 @@ public class CommonClass {
         ModBlockEntities.initialize(Balm.getBlockEntities());
         ModItems.initialize(Balm.getItems());
         ModEntities.initialize(Balm.getEntities());
+        ModWorldGen.initialize(Balm.getWorldGen());
         //ModMenus.initialize(Balm.getMenus());
         
         isInitialized = true;

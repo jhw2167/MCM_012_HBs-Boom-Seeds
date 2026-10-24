@@ -12,7 +12,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -42,6 +43,7 @@ public class SunJumpFlowerBlock extends FlowerBlock implements EntityBlock, Bone
     private static final double LAUNCH_VELOCITY = VANILLA_JUMP_VELOCITY * Math.sqrt(LAUNCH_BLOCKS / VANILLA_JUMP_HEIGHT);
     private static final int STEW_EFFECT_SECONDS = 5;
     private static final double LAUNCH_RANGE = 1.5;
+    private static final double NEARBY_PLAYER_RANGE = 32.0;
 
     public SunJumpFlowerBlock(Properties properties) {
         super(MobEffects.JUMP, STEW_EFFECT_SECONDS, properties);
@@ -80,12 +82,19 @@ public class SunJumpFlowerBlock extends FlowerBlock implements EntityBlock, Bone
         entity.resetFallDistance();
     }
 
-    @Nullable
-    public static Player findLaunchTarget(Level level, BlockPos pos) {
-        if (!level.canSeeSky(pos)) return null;
-        Player player = level.getNearestPlayer(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, LAUNCH_RANGE, false);
-        if (player == null || player.isSpectator()) return null;
-        return player;
+    public static boolean hasNearbyPlayer(Level level, BlockPos pos) {
+        return level.hasNearbyAlivePlayer(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, NEARBY_PLAYER_RANGE);
+    }
+
+    public static List<LivingEntity> findLaunchTargets(Level level, BlockPos pos) {
+        if (!level.canSeeSky(pos)) return List.of();
+        AABB range = new AABB(pos).inflate(LAUNCH_RANGE);
+        return level.getEntitiesOfClass(LivingEntity.class, range, SunJumpFlowerBlock::canLaunch);
+    }
+
+    private static boolean canLaunch(LivingEntity entity) {
+        if (entity.isSpectator() || entity.isCrouching()) return false;
+        return entity.isAlive();
     }
 
     public static void setSprung(Level level, BlockPos pos, BlockState ignored, boolean sprung) {
@@ -96,17 +105,20 @@ public class SunJumpFlowerBlock extends FlowerBlock implements EntityBlock, Bone
 
     public static void launch(Level level, BlockPos pos, BlockState state) {
         setSprung(level, pos, state, true);
-
-        Player player = findLaunchTarget(level, pos);
         level.playSound(null, pos, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.BLOCKS, 1.0f, 1.2f);
-        if (player == null) return;
 
-        Vec3 motion = player.getDeltaMovement();
-        player.setDeltaMovement(motion.x, LAUNCH_VELOCITY, motion.z);
-        player.resetFallDistance();
-        player.hurtMarked = true;
+        for (LivingEntity target : findLaunchTargets(level, pos)) {
+            launchEntity(target);
+        }
+    }
 
-        if (player instanceof ServerPlayer serverPlayer) {
+    private static void launchEntity(LivingEntity entity) {
+        Vec3 motion = entity.getDeltaMovement();
+        entity.setDeltaMovement(motion.x, LAUNCH_VELOCITY, motion.z);
+        entity.resetFallDistance();
+        entity.hurtMarked = true;
+
+        if (entity instanceof ServerPlayer serverPlayer) {
             serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer));
         }
     }
